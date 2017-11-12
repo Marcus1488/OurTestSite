@@ -1,2 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+
+$breakpoint-sm: 500px;
+$breakpoint-md: 769px;
+$breakpoint-lg: 1025px;
+$breakpoint-xl: 2000px;
+
+html {
+  font-size: 10px;
+  font-family: "Roboto";
+
+  body {
+    margin: 0px;
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: 12px;
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    font-size: 14px;
+  }
+}
