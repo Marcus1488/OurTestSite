@@ -17,6 +17,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 
+/*Other*/
+import { AuthGuard } from "./guards/auth.guard";
+import { AuthService } from "./services/auth.service";
+import { TokenInterceptor } from "./helpers/token.interceptor";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,11 +34,20 @@ import { HomeComponent } from './home/home.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
+    HttpClientModule,
     MatCardModule,
     MatInputModule,
     MatButtonModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    AuthGuard,
+    AuthService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
