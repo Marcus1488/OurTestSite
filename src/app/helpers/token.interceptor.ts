@@ -16,15 +16,10 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const auth = this.injector.get(AuthService);
 
-    /*req = req.clone({
-      setHeaders: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-        'Accept': 'application/json',
-       // 'Authorization': `Bearer ${auth.getToken()}`
-      }
-    });*/
+    req = req.clone({
+      headers: req.headers.set('Authorization', `${auth.getToken()}`)
+    });
 
-    console.log("new headers", req.headers.keys());
     return next.handle(req)
   }
 }

@@ -1,7 +1,7 @@
-<div class="login" fxLayoutAlign="center center">
+<div class="register" fxLayoutAlign="center center">
   <mat-card fxLayout="column" fxLayoutAlign="center">
-    <mat-card-title>Login</mat-card-title>
-    <form class="login-form" fxLayout="column" fxLayoutAlign="center center">
+    <mat-card-title>Register</mat-card-title>
+    <form class="register-form" fxLayout="column" fxLayoutAlign="center center">
       <mat-form-field>
         <input [(ngModel)]="username"
                matInput
@@ -24,9 +24,26 @@
           Password is <strong>required</strong>
         </mat-error>
       </mat-form-field>
+
+      <mat-form-field>
+        <input [(ngModel)]="confirmPassword"
+               matInput
+               placeholder="Confirm password"
+               type="password"
+               [formControl]="confirmPasswordFormControl"
+               [errorStateMatcher]="matcher">
+        <mat-error *ngIf="confirmPasswordFormControl.hasError('required')">
+          Password is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
     </form>
 
-    <button [disabled]="usernameFormControl.hasError('required') || passwordFormControl.hasError('required')" mat-raised-button (click)="login()">Login</button>
+    <button
+      [disabled]="usernameFormControl.hasError('required') || passwordFormControl.hasError('required') || confirmPasswordFormControl.hasError('required')"
+      mat-raised-button
+      (click)="register()">
+      Register
+    </button>
 
   </mat-card>
 </div>

@@ -1,7 +1,19 @@
 <div class="header" fxLayoutAlign="center center">
   <div class="header-content" fxLayout="row" fxLayoutAlign="space-between">
     <div class="title">Bitch</div>
-    <a mat-raised-button routerLink="/login">Login</a>
+
+    <div *ngIf="isLoggedIn$ | async; else authButtons">
+      <span class="username">{{username}}</span>
+      <button mat-raised-button (click)="logout()">Logout</button>
+    </div>
+
+    <ng-template #authButtons>
+      <div class="buttons">
+        <a mat-raised-button routerLink="/login">Login</a>
+        <a mat-raised-button routerLink="/register">Register</a>
+      </div>
+    </ng-template>
+
   </div>
 </div>
 

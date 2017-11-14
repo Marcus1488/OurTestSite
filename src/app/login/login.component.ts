@@ -1,5 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {AuthService} from "../services/auth.service";
+import {FormControl, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -8,18 +10,27 @@ import {AuthService} from "../services/auth.service";
   encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit {
+  private username: string = '';
+  private password: string = '';
 
-  constructor(private authService: AuthService) {
+  usernameFormControl = new FormControl('', [
+    Validators.required
+  ]);
+  passwordFormControl = new FormControl('', [
+    Validators.required
+  ]);
+
+  constructor(private authService: AuthService, private router: Router) {
   }
 
   ngOnInit() {
   }
 
   login() {
-    this.authService.login('admin', '123')
+    this.authService.login(this.username, this.password)
       .subscribe(
         user => {
-          console.log(user);
+          this.router.navigate(["/"]);
         },
         error => {
           console.log(error);

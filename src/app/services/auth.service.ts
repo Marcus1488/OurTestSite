@@ -1,13 +1,29 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import {LoginResponse} from "../interfaces/login";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class AuthService {
+  private loggedIn = new BehaviorSubject<boolean>(false); // {1}
+
+  get isLoggedIn() {
+    return this.loggedIn.asObservable();
+  }
+
+  getUsername() {
+    return JSON.parse(localStorage.getItem('user')).username;
+  }
 
   constructor(private http: HttpClient) {
+    if (this.getToken()) {
+      this.loggedIn.next(true);
+    } else {
+      this.loggedIn.next(false);
+    }
   }
 
   getToken(): string {
@@ -15,20 +31,35 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
-    return this.http.post('http://localhost:3000/user/authenticate', {username: username, password: password}, {headers: headers})
+    return this.http.post<LoginResponse>('/api/user/authenticate', {username: username, password: password})
       .map((res) => {
-        let user = res['user'];
-        if (user && user.token) {
-          localStorage.setItem('user', JSON.stringify(user));
-          localStorage.setItem('token', user.token);
+        let data = res;
+        if (data && data.token) {
+          this.loggedIn.next(true);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('token', data.token);
         }
 
-        return user;
+        return data.user;
+      })
+  }
+
+  register(username: string, password: string): Observable<any> {
+    return this.http.post<LoginResponse>('/api/user/register', {username: username, password: password})
+      .map((res) => {
+        let data = res;
+        if (data && data.token) {
+          this.loggedIn.next(true);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('token', data.token);
+        }
+
+        return data.user;
       })
   }
 
   logout() {
+    this.loggedIn.next(false);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
   }
